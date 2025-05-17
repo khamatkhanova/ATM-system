@@ -2,7 +2,10 @@ package com.alinahamatkhanova.bl.services;
 import com.alinahamatkhanova.infrastructure.models.Account;
 import com.alinahamatkhanova.infrastructure.models.User;
 import com.alinahamatkhanova.infrastructure.repositories.AccountRepository;
+import org.springframework.stereotype.Service;
+import java.util.List;
 
+@Service
 public class AccountService {
 
     private final AccountRepository accountRepository;
@@ -43,7 +46,15 @@ public class AccountService {
     }
 
     public Account getAccountById(String id) {
-        return accountRepository.findById(id);
+        return accountRepository.findById(id).orElse(null);
+    }
+
+    public List<Account> getAccountsByUser(String userLogin) {
+        return accountRepository.findByUserLogin(userLogin);
+    }
+
+    public List<Account> getAllAccounts() {
+        return accountRepository.findAll();
     }
 
     public void saveAccount(Account account) {

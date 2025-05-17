@@ -30,7 +30,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(authz -> authz.requestMatchers("/login", "/logout", "/success").permitAll().requestMatchers("/admin/**").hasRole("ADMIN").requestMatchers("/client/**").hasRole("CLIENT").anyRequest().authenticated()).formLogin(form -> form.defaultSuccessUrl("/success", true).permitAll()).logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/logout-success").invalidateHttpSession(true).deleteCookies("JSESSIONID"));
+        http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(authz -> authz.requestMatchers("/login", "/logout", "/success").permitAll().requestMatchers("/admin/**").hasRole("ADMIN").requestMatchers("/client/**").hasRole("CLIENT").anyRequest().authenticated())
+                .formLogin(form -> form.defaultSuccessUrl("/success", true).permitAll())
+                .logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/logout-success").invalidateHttpSession(true).deleteCookies("JSESSIONID"));
         return http.build();
     }
 

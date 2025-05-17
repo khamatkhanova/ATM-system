@@ -26,7 +26,7 @@ public class AccountController {
     @Operation(summary = "cоздать аккаунт для пользователя")
     @ApiResponses({@ApiResponse(responseCode = "201", description = "аккаунт создан"), @ApiResponse(responseCode = "404", description = "пользователь не найден")})
     @PostMapping
-    public ResponseEntity<AccountDTO> createAccount(@RequestParam (name = "userLogin") String userLogin) {
+    public ResponseEntity<AccountDTO> createAccount(@RequestParam(name = "userLogin") String userLogin) {
         if (!userService.exists(userLogin)) {
             return ResponseEntity.notFound().build();
         }
@@ -38,7 +38,7 @@ public class AccountController {
     @Operation(summary = "пополнить счёт")
     @ApiResponses({@ApiResponse(responseCode = "200", description = "счёт пополнен"), @ApiResponse(responseCode = "404", description = "аккаунт не найден")})
     @PostMapping("/{id}/deposit")
-    public ResponseEntity<Void> deposit(@PathVariable (name = "id") String id, @RequestParam (name = "amount") double amount) {
+    public ResponseEntity<Void> deposit(@PathVariable(name = "id") String id, @RequestParam(name = "amount") double amount) {
         Account account = accountService.getAccountById(id);
         if (account == null) {
             return ResponseEntity.notFound().build();
@@ -50,7 +50,7 @@ public class AccountController {
     @Operation(summary = "снять деньги со счёта")
     @ApiResponses({@ApiResponse(responseCode = "200", description = "снятие успешно"), @ApiResponse(responseCode = "404", description = "аккаунт не найден")})
     @PostMapping("/{id}/withdraw")
-    public ResponseEntity<Void> withdraw(@PathVariable (name = "id") String id, @RequestParam (name = "amount") double amount) {
+    public ResponseEntity<Void> withdraw(@PathVariable(name = "id") String id, @RequestParam(name = "amount") double amount) {
         Account account = accountService.getAccountById(id);
         if (account == null) {
             return ResponseEntity.notFound().build();
@@ -62,7 +62,7 @@ public class AccountController {
     @Operation(summary = "перевести деньги с одного счёта на другой")
     @ApiResponses({@ApiResponse(responseCode = "200", description = "перевод выполнен"), @ApiResponse(responseCode = "404", description = "один из аккаунтов не найден")})
     @PostMapping("/transfer")
-    public ResponseEntity<Void> transfer(@RequestParam (name = "fromAccountId") String fromAccountId, @RequestParam (name = "toAccountId") String toAccountId, @RequestParam(name = "amount") double amount) {
+    public ResponseEntity<Void> transfer(@RequestParam(name = "fromAccountId") String fromAccountId, @RequestParam(name = "toAccountId") String toAccountId, @RequestParam(name = "amount") double amount) {
 
         Account from = accountService.getAccountById(fromAccountId);
         Account to = accountService.getAccountById(toAccountId);
@@ -76,10 +76,12 @@ public class AccountController {
         accountService.transfer(from, to, amount, sender, receiver);
 
         return ResponseEntity.ok().build();
-    }@Operation(summary = "получить аккаунт по ID")
+    }
+
+    @Operation(summary = "получить аккаунт по ID")
     @ApiResponses({@ApiResponse(responseCode = "200", description = "аккаунт найден"), @ApiResponse(responseCode = "404", description = "аккаунт не найден")})
     @GetMapping("/{id}")
-    public ResponseEntity<AccountDTO> getAccountById(@PathVariable (name = "id") String id) {
+    public ResponseEntity<AccountDTO> getAccountById(@PathVariable(name = "id") String id) {
         Account account = accountService.getAccountById(id);
         return account != null ? ResponseEntity.ok(new AccountDTO(account)) : ResponseEntity.notFound().build();
     }
@@ -87,8 +89,8 @@ public class AccountController {
     @Operation(summary = "получить все аккаунты пользователя")
     @ApiResponses({@ApiResponse(responseCode = "200", description = "аккаунты найдены"), @ApiResponse(responseCode = "404", description = "пользователь не найден")})
     @GetMapping("/user/{userLogin}")
-    public ResponseEntity<List<AccountDTO>> getAccountsByUser(@PathVariable (name = "userLogin") String userLogin) {
-        if (!userService.exists(userLogin)){
+    public ResponseEntity<List<AccountDTO>> getAccountsByUser(@PathVariable(name = "userLogin") String userLogin) {
+        if (!userService.exists(userLogin)) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(accountService.getAccountsByUser(userLogin).stream().map(AccountDTO::new).toList());

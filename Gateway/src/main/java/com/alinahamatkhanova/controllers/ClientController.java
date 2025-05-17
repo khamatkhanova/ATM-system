@@ -1,5 +1,5 @@
 package com.alinahamatkhanova.controllers;
-import com.alinahamatkhanova.services.ProxyService;
+import com.alinahamatkhanova.services.IClientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -11,74 +11,50 @@ import java.util.Map;
 @PreAuthorize("hasRole('CLIENT')")
 public class ClientController {
 
-    private final ProxyService proxyService;
+    private final IClientService clientService;
 
-    public ClientController(ProxyService proxyService) {
-        this.proxyService = proxyService;
+    public ClientController(IClientService clientService) {
+        this.clientService = clientService;
     }
 
     @GetMapping("/me")
     public ResponseEntity<String> getClientInfo(Authentication authentication, @RequestHeader Map<String, String> headers) {
-        String username = authentication.getName();
-        return proxyService.get("/api/users/" + username, headers);
+        return ResponseEntity.ok(clientService.getClientInfo(authentication, headers));
     }
 
     @GetMapping("/accounts")
     public ResponseEntity<String> getClientAccounts(Authentication authentication, @RequestHeader Map<String, String> headers) {
-        String username = authentication.getName();
-        return proxyService.get("/api/accounts/user/" + username, headers);
+        return ResponseEntity.ok(clientService.getClientAccounts(authentication, headers));
     }
 
     @GetMapping("/accounts/{id}")
-    public ResponseEntity<String> getAccountById(@PathVariable("id") String id, @RequestHeader Map<String, String> headers) {
-        return proxyService.get("/api/accounts/" + id, headers);
+    public ResponseEntity<String> getAccountById(@PathVariable(name = "id") String id, @RequestHeader Map<String, String> headers) {
+        return ResponseEntity.ok(clientService.getAccountById(id, headers));
     }
 
     @PostMapping("/friends")
-    public ResponseEntity<String> addFriend(Authentication authentication, @RequestParam("login") String loginParam, @RequestParam("name") String name, @RequestParam("age") int age, @RequestParam("gender") String gender, @RequestParam("hairColor") String hairColor) {
-
-        String login = authentication.getName();
-        String body = """
-        {
-            "login": "%s",
-            "name": "%s",
-            "age": %d,
-            "gender": "%s",
-            "hairColor": "%s"
-        }
-        """.formatted(loginParam, name, age, gender, hairColor);
-
-        Map<String, String> headers = Map.of("Content-Type", "application/json");
-        return proxyService.post("/api/users/" + login + "/friends", body, headers);
+    public ResponseEntity<String> addFriend(Authentication authentication, @RequestParam(name = "login") String login, @RequestParam(name = "name") String name, @RequestParam(name = "age") int age, @RequestParam(name = "gender") String gender, @RequestParam(name = "hairColor") String hairColor) {
+        return ResponseEntity.ok(clientService.addFriend(authentication, login, name, age, gender, hairColor));
     }
 
     @DeleteMapping("/friends/{friendLogin}")
-    public ResponseEntity<String> removeFriend(Authentication authentication, @PathVariable("friendLogin") String friendLogin, @RequestHeader Map<String, String> headers) {
-
-        String login = authentication.getName();
-        return proxyService.delete("/api/users/" + login + "/friends/" + friendLogin, headers);
+    public ResponseEntity<String> removeFriend(Authentication authentication,
+                                               @PathVariable(name = "friendLogin") String friendLogin, @RequestHeader Map<String, String> headers) {
+        return ResponseEntity.ok(clientService.removeFriend(authentication, friendLogin, headers));
     }
 
     @PostMapping("/accounts/{id}/deposit")
-    public ResponseEntity<String> deposit(@PathVariable("id") String id, @RequestParam("amount") double amount, @RequestHeader Map<String, String> headers) {
-        String path = "/api/accounts/" + id + "/deposit?amount=" + amount;
-        return proxyService.postWithoutBody(path, headers);
+    public ResponseEntity<String> deposit(@PathVariable(name = "id") String id, @RequestParam(name = "amount") double amount, @RequestHeader Map<String, String> headers) {
+        return ResponseEntity.ok(clientService.deposit(id, amount, headers));
     }
 
     @PostMapping("/accounts/{id}/withdraw")
-    public ResponseEntity<String> withdraw(@PathVariable("id") String id, @RequestParam("amount") double amount, @RequestHeader Map<String, String> headers) {
-        String path = "/api/accounts/" + id + "/withdraw?amount=" + amount;
-        return proxyService.postWithoutBody(path, headers);
+    public ResponseEntity<String> withdraw(@PathVariable(name = "id") String id, @RequestParam(name = "amount") double amount, @RequestHeader Map<String, String> headers) {
+        return ResponseEntity.ok(clientService.withdraw(id, amount, headers));
     }
 
     @PostMapping("/accounts/transfer")
-    public ResponseEntity<String> transfer(@RequestParam("fromAccountId") String fromAccountId, @RequestParam("toAccountId") String toAccountId, @RequestParam("amount") double amount, @RequestHeader Map<String, String> headers) {
-        String path = "/api/accounts/transfer?fromAccountId=" + fromAccountId + "&toAccountId=" + toAccountId + "&amount=" + amount;
-        return proxyService.postWithoutBody(path, headers);
-    }
-
-    @PostMapping("/logout")
-    public ResponseEntity<String> logout() {
-        return ResponseEntity.ok("logout");
+    public ResponseEntity<String> transfer(@RequestParam(name = "fromAccountId") String fromAccountId, @RequestParam(name = "toAccountId") String toAccountId, @RequestParam(name = "amount") double amount, @RequestHeader Map<String, String> headers) {
+        return ResponseEntity.ok(clientService.transfer(fromAccountId, toAccountId, amount, headers));
     }
 }
