@@ -1,14 +1,14 @@
 package com.alinahamatkhanova.services;
+import com.alinahamatkhanova.dto.AddFriendRequest;
 import org.springframework.security.core.Authentication;
-import java.util.Map;
 
 public interface IClientService {
-    String getClientInfo(Authentication authentication, Map<String, String> headers);
-    String getClientAccounts(Authentication authentication, Map<String, String> headers);
-    String getAccountById(String id, Map<String, String> headers);
-    String addFriend(Authentication authentication, String login, String name, int age, String gender, String hairColor);
-    String removeFriend(Authentication authentication, String friendLogin, Map<String, String> headers);
-    String deposit(String accountId, double amount, Map<String, String> headers);
-    String withdraw(String accountId, double amount, Map<String, String> headers);
-    String transfer(String fromAccountId, String toAccountId, double amount, Map<String, String> headers);
+    String getClientInfo(Authentication authentication);
+    String getClientAccounts(Authentication authentication);
+    String getAccountById(String id);
+    String addFriend(Authentication authentication, AddFriendRequest request);
+    String removeFriend(Authentication authentication, String friendLogin);
+    String deposit(String accountId, double amount);
+    String withdraw(String accountId, double amount);
+    String transfer(String fromAccountId, String toAccountId, double amount);
 }

@@ -1,7 +1,7 @@
 package com.alinahamatkhanova.services;
-import org.springframework.stereotype.Service;
+import com.alinahamatkhanova.dto.AddFriendRequest;
 import org.springframework.security.core.Authentication;
-import java.util.Map;
+import org.springframework.stereotype.Service;
 
 @Service
 public class ClientService implements IClientService {
@@ -17,45 +17,43 @@ public class ClientService implements IClientService {
     }
 
     @Override
-    public String getClientInfo(Authentication authentication, Map<String, String> headers) {
-        return proxyService.get("/api/users/" + getUsername(authentication), headers).getBody();
+    public String getClientInfo(Authentication authentication) {
+        return proxyService.getUserInfo(getUsername(authentication));
     }
 
     @Override
-    public String getClientAccounts(Authentication authentication, Map<String, String> headers) {
-        return proxyService.get("/api/accounts/user/" + getUsername(authentication), headers).getBody();
+    public String getClientAccounts(Authentication authentication) {
+        return proxyService.getUserAccounts(getUsername(authentication));
     }
 
     @Override
-    public String getAccountById(String id, Map<String, String> headers) {
-        return proxyService.get("/api/accounts/" + id, headers).getBody();
+    public String getAccountById(String id) {
+        return proxyService.getAccountWithTransactions(id);
     }
 
     @Override
-    public String addFriend(Authentication authentication, String login, String name, int age, String gender, String hairColor) {
-        String jsonBody = String.format("{\"login\":\"%s\",\"name\":\"%s\",\"age\":%d,\"gender\":\"%s\",\"hairColor\":\"%s\"}",
-                login, name, age, gender, hairColor);
-        Map<String, String> headers = Map.of("Content-Type", "application/json");
-        return proxyService.post("/api/users/" + getUsername(authentication) + "/friends", jsonBody, headers).getBody();
+    public String addFriend(Authentication authentication, AddFriendRequest request) {
+        return proxyService.addFriend(getUsername(authentication), request.getLogin(), request.getName(), request.getAge(), request.getGender(), request.getHairColor()
+        );
     }
 
     @Override
-    public String removeFriend(Authentication authentication, String friendLogin, Map<String, String> headers) {
-        return proxyService.delete("/api/users/" + getUsername(authentication) + "/friends/" + friendLogin, headers).getBody();
+    public String removeFriend(Authentication authentication, String friendLogin) {
+        return proxyService.removeFriend(getUsername(authentication), friendLogin);
     }
 
     @Override
-    public String deposit(String accountId, double amount, Map<String, String> headers) {
-        return proxyService.postWithoutBody("/api/accounts/" + accountId + "/deposit?amount=" + amount, headers).getBody();
+    public String deposit(String accountId, double amount) {
+        return proxyService.deposit(accountId, amount);
     }
 
     @Override
-    public String withdraw(String accountId, double amount, Map<String, String> headers) {
-        return proxyService.postWithoutBody("/api/accounts/" + accountId + "/withdraw?amount=" + amount, headers).getBody();
+    public String withdraw(String accountId, double amount) {
+        return proxyService.withdraw(accountId, amount);
     }
 
     @Override
-    public String transfer(String fromAccountId, String toAccountId, double amount, Map<String, String> headers) {
-        return proxyService.postWithoutBody("/api/accounts/transfer?fromAccountId=" + fromAccountId + "&toAccountId=" + toAccountId + "&amount=" + amount, headers).getBody();
+    public String transfer(String fromAccountId, String toAccountId, double amount) {
+        return proxyService.transfer(fromAccountId, toAccountId, amount);
     }
 }

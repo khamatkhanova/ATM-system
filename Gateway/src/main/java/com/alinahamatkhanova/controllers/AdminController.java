@@ -1,9 +1,9 @@
 package com.alinahamatkhanova.controllers;
+import com.alinahamatkhanova.dto.CreateClientRequest;
 import com.alinahamatkhanova.services.IAdminService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
@@ -17,8 +17,8 @@ public class AdminController {
     }
 
     @PostMapping("/create-client")
-    public ResponseEntity<Void> createClient(@RequestHeader Map<String, String> headers, @RequestBody Map<String, String> body) {
-        adminService.createClient(headers, body);
+    public ResponseEntity<Void> createClient(@RequestBody CreateClientRequest request) {
+        adminService.createClient(request);
         return ResponseEntity.status(201).build();
     }
 
@@ -29,27 +29,27 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<String> getAllUsers(@RequestHeader Map<String, String> headers, @RequestParam(required = false, name = "gender") String gender, @RequestParam(required = false, name = "hairColor") String hairColor) {
-        return ResponseEntity.ok(adminService.getAllUsers(headers, gender, hairColor));
+    public ResponseEntity<String> getAllUsers(@RequestParam(required = false, name = "gender") String gender, @RequestParam(required = false, name = "hairColor") String hairColor) {
+        return ResponseEntity.ok(adminService.getAllUsers(gender, hairColor));
     }
 
     @GetMapping("/users/{username}")
-    public ResponseEntity<String> getUserByUsername(@PathVariable(name = "username") String username, @RequestHeader Map<String, String> headers) {
-        return ResponseEntity.ok(adminService.getUserByUsername(username, headers));
+    public ResponseEntity<String> getUserByUsername(@PathVariable(name = "username") String username) {
+        return ResponseEntity.ok(adminService.getUserByUsername(username));
     }
 
     @GetMapping("/accounts")
-    public ResponseEntity<String> getAllAccounts(@RequestHeader Map<String, String> headers) {
-        return ResponseEntity.ok(adminService.getAllAccounts(headers));
+    public ResponseEntity<String> getAllAccounts() {
+        return ResponseEntity.ok(adminService.getAllAccounts());
     }
 
     @GetMapping("/accounts/user/{username}")
-    public ResponseEntity<String> getAccountsByUser(@PathVariable(name = "username") String username, @RequestHeader Map<String, String> headers) {
-        return ResponseEntity.ok(adminService.getAccountsByUser(username, headers));
+    public ResponseEntity<String> getAccountsByUser(@PathVariable(name = "username") String username) {
+        return ResponseEntity.ok(adminService.getAccountsByUser(username));
     }
 
     @GetMapping("/accounts/{id}")
-    public ResponseEntity<String> getAccountWithTransactions(@PathVariable(name = "id") String id, @RequestHeader Map<String, String> headers) {
-        return ResponseEntity.ok(adminService.getAccountWithTransactions(id, headers));
+    public ResponseEntity<String> getAccountWithTransactions(@PathVariable(name = "id") String id) {
+        return ResponseEntity.ok(adminService.getAccountWithTransactions(id));
     }
 }

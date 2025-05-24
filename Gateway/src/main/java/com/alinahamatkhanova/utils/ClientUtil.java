@@ -3,7 +3,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import java.util.Map;
 
 @Component
 public class ClientUtil {
@@ -11,11 +10,11 @@ public class ClientUtil {
     private final WebClient webClient;
 
     public ClientUtil(@Value("${banksystem.base-url}") String baseUrl) {
-        this.webClient = WebClient.builder().baseUrl(baseUrl).build();
+        this.webClient = WebClient.builder().baseUrl(baseUrl).defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).build();
     }
 
-    private ResponseEntity<String> sendRequest(HttpMethod method, String path, Map<String, String> headers, Object body) {
-        WebClient.RequestBodySpec request = webClient.method(method).uri(path).headers(httpHeaders -> headers.forEach(httpHeaders::add));
+    private ResponseEntity<String> sendRequest(HttpMethod method, String path, Object body) {
+        WebClient.RequestBodySpec request = webClient.method(method).uri(path);
 
         if (method == HttpMethod.POST && body != null) {
             request.bodyValue(body);
@@ -23,19 +22,19 @@ public class ClientUtil {
         return request.retrieve().toEntity(String.class).block();
     }
 
-    public ResponseEntity<String> forwardGet(String path, Map<String, String> headers) {
-        return sendRequest(HttpMethod.GET, path, headers, null);
+    public ResponseEntity<String> get(String path) {
+        return sendRequest(HttpMethod.GET, path, null);
     }
 
-    public ResponseEntity<String> forwardPost(String path, Map<String, String> headers, Object body) {
-        return sendRequest(HttpMethod.POST, path, headers, body);
+    public ResponseEntity<String> post(String path, Object body) {
+        return sendRequest(HttpMethod.POST, path, body);
     }
 
-    public ResponseEntity<String> forwardPostWithoutBody(String path, Map<String, String> headers) {
-        return sendRequest(HttpMethod.POST, path, headers, null);
+    public ResponseEntity<String> postWithoutBody(String path) {
+        return sendRequest(HttpMethod.POST, path, null);
     }
 
-    public ResponseEntity<String> forwardDelete(String path, Map<String, String> headers) {
-        return sendRequest(HttpMethod.DELETE, path, headers, null);
+    public ResponseEntity<String> delete(String path) {
+        return sendRequest(HttpMethod.DELETE, path, null);
     }
 }
