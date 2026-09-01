@@ -5,23 +5,39 @@
 ## функциональность
 
 создание и управление счетами
+
 пополнение и снятие средств
+
 просмотр баланса и истории операций
+
 CRUD-операции
+
 REST API
+
 пагинация и фильтрация
+
 аутентификация и авторизация
+
 ролевая модель пользователей и администраторов
 
 ## stack
 
 Java 21
+
 Spring Boot 3
+
 Spring MVC
+
 Spring Data JPA
+
 Hibernate
+
 PostgreSQL
+
 Spring Security 6
+
 Maven
+
 JUnit 5
+
 GitHub Actions
